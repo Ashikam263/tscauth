@@ -86,7 +86,7 @@ import config from 'config';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { createConnection, Connection } from 'typeorm';
+import { createConnection } from 'typeorm';
 import { AppDataSource } from './utils/data-source';
 import AppError from './utils/appError';
 import authRouter from './routes/auth.routes';
@@ -146,39 +146,24 @@ async function startServer() {
     });
   });
 
-  return app;
-}
-
-// Connect to database and start server
-async function initializeApp() {
+  // Connect to database and start server
   try {
     validateEnv(); // Validate environment variables
-
-    // Establish TypeORM database connection
-    const connection: Connection = await createConnection();
-
-    // Initialize Redis
-    await redisClient.connectAsync(); // Assuming redisClient has been properly updated
-
-    // Start express server
-    const app = await startServer();
+    await createConnection(); // Establish TypeORM database connection
     const port = process.env.PORT || config.get<number>('port');
     app.listen(port, () => {
       console.log(`Server started on port: ${port}`);
     });
   } catch (error) {
-    console.error('Error initializing application:', error);
-    process.exit(1); // Exit process on error
+    console.error('Error starting server:', error);
   }
 }
 
 // Initialize application
 AppDataSource.initialize()
   .then(() => {
-    initializeApp(); // Start application after initializing data source
+    startServer(); // Start server after initializing application
   })
   .catch((error) => {
-    console.error('Error initializing data source:', error);
-    process.exit(1); // Exit process on error
+    console.error('Error initializing application:', error);
   });
-
