@@ -5,11 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
+    "clean": "if exist build rmdir /s /q build",
     "build": "tsc -p .",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migrate": "rm -rf build && npm run build && npm run typeorm migration:generate ./src/migrations/added-user-entity -d ./src/utils/data-source.ts",
-    "db:push": "rm -rf build && npm run build && npm run typeorm migration:run -d src/utils/data-source.ts"
-  },
+    "migrate": "npm run clean && npm run build && npm run typeorm migration:generate ./src/migrations/added-user-entity -d ./src/utils/data-source.ts",
+    "db:push": "npm run clean && npm run build && npm run typeorm migration:run --dataSource=AppDataSource"
+  },  
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
