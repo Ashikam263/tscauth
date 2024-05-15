@@ -91,7 +91,7 @@ import { AppDataSource } from './utils/data-source';
 import AppError from './utils/appError';
 import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
-import redisClient from './utils/connectRedis';
+// import redisClient from './utils/connectRedis';
 
 // Validate environment variables
 function validateEnv() {
@@ -124,7 +124,8 @@ async function startServer() {
 
   // Health checker route
   app.get('/api/healthChecker', async (_, res: Response) => {
-    const message = await redisClient.get('try');
+    // const message = await redisClient.get('try');
+    const message = 'Hello Welcome to Express with TypeORM';
     res.status(200).json({
       status: 'success',
       message,

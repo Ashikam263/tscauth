@@ -1,5 +1,5 @@
 {
-  "name": "node_typeorm",
+  "name": "jwt_auth_node_typeorm",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "typeorm:generate": "typeorm-ts-node-commonjs migration:generate -d build/data-source.js src/migration/nextMigration",
     "typeorm:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "migrate": "npm run clean && npm run build && npm run typeorm migration:generate ./src/migrations/added-user-entity -d ./src/utils/data-source.ts",
-    "db:push": "npm run clean && npm run build && npm run typeorm migration:run -- --AppDataSource=./src/utils/data-source.ts"
+    "db:push": "npm run clean && npm run build && npm run typeorm migration:run -- --dataSource=./src/utils/data-source.ts"
   },  
   "dependencies": {
     "bcryptjs": "^2.4.3",
