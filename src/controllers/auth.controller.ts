@@ -11,6 +11,7 @@ import AppError from '../utils/appError';
 // import redisClient from '../utils/connectRedis';
 import { signJwt, verifyJwt } from '../utils/jwt';
 import { User } from '../entities/user.entity';
+import jwt from 'jsonwebtoken';
 
 const cookiesOptions: CookieOptions = {
   httpOnly: true,
@@ -101,65 +102,7 @@ export const loginUserHandler = async (
   }
 };
 
-// export const refreshAccessTokenHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const refresh_token = req.cookies.refresh_token;
 
-//     const message = 'Could not refresh access token';
-
-//     if (!refresh_token) {
-//       return next(new AppError(403, message));
-//     }
-
-//     // Validate refresh token
-//     const decoded = verifyJwt<{ sub: string }>(
-//       refresh_token,
-//       'refreshTokenPublicKey'
-//     );
-
-//     if (!decoded) {
-//       return next(new AppError(403, message));
-//     }
-
-//     // Check if user has a valid session
-//     const session = await redisClient.get(decoded.sub);
-
-//     if (!session) {
-//       return next(new AppError(403, message));
-//     }
-
-//     // Check if user still exist
-//     const user = await findUserById(JSON.parse(session).id);
-
-//     if (!user) {
-//       return next(new AppError(403, message));
-//     }
-
-//     // Sign new access token
-//     const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
-//       expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
-//     });
-
-//     // 4. Add Cookies
-//     res.cookie('access_token', access_token, accessTokenCookieOptions);
-//     res.cookie('logged_in', true, {
-//       ...accessTokenCookieOptions,
-//       httpOnly: false,
-//     });
-
-//     // 5. Send response
-//     res.status(200).json({
-//       status: 'success',
-//       access_token,
-//     });
-//   } catch (err: any) {
-//     next(err);
-//   }
-// };
 
 export const refreshAccessTokenHandler = async (
   req: Request,
@@ -182,6 +125,13 @@ export const refreshAccessTokenHandler = async (
     );
 
     if (!decoded) {
+      return next(new AppError(403, message));
+    }
+
+    // Check is user has a valid session
+    const session = await jwt.verify(decoded.sub, 'refreshTokenPublicKey');
+
+    if (!session) {
       return next(new AppError(403, message));
     }
 
@@ -220,25 +170,6 @@ const logout = (res: Response) => {
   res.cookie('logged_in', '', { maxAge: 1 });
 };
 
-// export const logoutHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const user = res.locals.user;
-
-//     await redisClient.del(user.id);
-//     logout(res);
-
-//     res.status(200).json({
-//       status: 'success',
-//     });
-//   } catch (err: any) {
-//     next(err);
-//   }
-// };
-
 export const logoutHandler = async (
   req: Request,
   res: Response,
@@ -247,9 +178,7 @@ export const logoutHandler = async (
   try {
     const user = res.locals.user;
 
-    // Perform any necessary cleanup or logout actions here
-    // For example, calling a logout function
-    await logout(res); // Assuming logout function handles any cleanup tasks
+    await logout(res); 
 
     // Send success response
     res.status(200).json({

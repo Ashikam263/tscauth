@@ -4,6 +4,7 @@ import { findUserById } from '../services/user.service';
 import AppError from '../utils/appError';
 // import redisClient from '../utils/connectRedis';
 import { verifyJwt } from '../utils/jwt';
+import jwt from 'jsonwebtoken';
 
 export const deserializeUser = async (
   req: Request,
@@ -42,6 +43,16 @@ export const deserializeUser = async (
     // if (!session) {
     //   return next(new AppError(401, `Invalid token or session has expired`));
     // }
+
+    // const session = await jwt.verify(decoded.sub, 'refreshTokenPublicKey');
+    const session = await verifyJwt<{ sub: string }>(
+      access_token,
+      'accessTokenPublicKey'
+    );
+
+    if (!session) {
+      return next(new AppError(401, `Invalid token or session has expired`));
+    }
 
     // Check if the user still exist
     // const user = await findUserById(JSON.parse(session).id);

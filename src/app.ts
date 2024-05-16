@@ -150,7 +150,20 @@ async function startServer() {
   // Connect to database and start server
   try {
     validateEnv(); // Validate environment variables
-    await createConnection(); // Establish TypeORM database connection
+    const connection = await createConnection({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'ashik',
+      password: 'password',
+      database: 'authdb',
+      entities: [__dirname + '/entities/**/*.ts'], 
+      migrations: [__dirname + '/migrations/**/*.ts'], 
+      subscribers: [__dirname + '/subscribers/**/*.ts'], 
+      synchronize: false,
+      logging: false,
+    });
+    // Establish TypeORM database connection
     const port = process.env.PORT || config.get<number>('port');
     app.listen(port, () => {
       console.log(`Server started on port: ${port}`);
