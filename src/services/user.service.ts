@@ -6,6 +6,7 @@ import { CreateUserInput } from '../schemas/user.schema';
 // import redisClient from '../utils/connectRedis';
 import { AppDataSource } from '../utils/data-source';
 import { signJwt } from '../utils/jwt';
+import jwt from 'jsonwebtoken';
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -24,6 +25,7 @@ export const findUserById = async (userId: string) => {
 export const findUser = async (query: Object) => {
   return await userRepository.findOneBy(query);
 };
+
 export const signTokens = async (user: User) => {
   // 1. Create Session
   // redisClient.set(user.id, JSON.stringify(user), {
@@ -31,13 +33,24 @@ export const signTokens = async (user: User) => {
   // });
 
   // 2. Create Access and Refresh tokens
-  const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
-    expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
-  });
+  // const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
+  //   expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+  // });
 
-  const refresh_token = signJwt({ sub: user.id }, 'refreshTokenPrivateKey', {
-    expiresIn: `${config.get<number>('refreshTokenExpiresIn')}m`,
-  });
+  // const refresh_token = signJwt({ sub: user.id }, 'refreshTokenPrivateKey', {
+  //   expiresIn: `${config.get<number>('refreshTokenExpiresIn')}m`,
+  // });
 
+
+    // 2. Create Access and Refresh tokens
+    const access_token = jwt.sign({ sub: user.id }, config.get('accessTokenPrivateKey'), {
+      expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+    });
+  
+    const refresh_token = jwt.sign({ sub: user.id }, config.get('refreshTokenPrivateKey'), {
+      expiresIn: `${config.get<number>('refreshTokenExpiresIn')}m`,
+    });
+  
+  
   return { access_token, refresh_token };
 };
