@@ -7,11 +7,14 @@ import {
   findUserById,
   signTokens,
 } from '../services/user.service';
-import AppError from '../utils/appError';
+import AppError from '../utils/appError'
 // import redisClient from '../utils/connectRedis';
 import { signJwt, verifyJwt } from '../utils/jwt';
 import { User } from '../entities/user.entity';
 import jwt from 'jsonwebtoken';
+import time from '../config/time';
+import environmentVariables from '../config/envvariables';
+import { env } from 'process';
 
 const cookiesOptions: CookieOptions = {
   httpOnly: true,
@@ -112,46 +115,46 @@ export const refreshAccessTokenHandler = async (
   try {
     const refresh_token = req.cookies.refresh_token;
 
-    const message = 'Could not refresh access token';
+    // const message = 'Could not refresh access token';
 
     if (!refresh_token) {
-      return next(new AppError(403, message));
+      return next(new AppError(403, 'Refresh token missing'));
     }
 
     // Validate refresh token (assuming your verifyJwt function is properly implemented)
-    const decoded = verifyJwt<{ sub: string }>(
-      refresh_token,
-      'refreshTokenPublicKey'
-    );
+    // const decoded = verifyJwt<{ sub: string }>(
+    //   refresh_token,
+    //   'refreshTokenPublicKey'
+    // );
+    // const decoded = jwt.verify(refresh_token, config.get('refreshTokenPrivateKey'));
+    const decoded = jwt.verify(refresh_token, environmentVariables.refreshTokenPrivateKey || '') as { sub: string };
+
 
     if (!decoded) {
-      return next(new AppError(403, message));
-    }
-
-    // Check is user has a valid session
-    const session = await jwt.verify(decoded.sub, 'refreshTokenPublicKey');
-
-    if (!session) {
-      return next(new AppError(403, message));
+      return next(new AppError(403, 'Invalid Refresh Token'));
     }
 
     // Check if user exists by decoding the subject ID from the refresh token
-    const user = await findUserById(decoded.sub);
+    const user = await findUserById(decoded.sub as string);
 
     if (!user) {
-      return next(new AppError(403, message));
+      return next(new AppError(403, 'User not found'));
     }
 
     // Sign new access token
-    const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
-      expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+    // const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
+    //   expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+    // });
+
+    const access_token = jwt.sign({ sub: user.id }, config.get('accessTokenPrivateKey'), {
+      expiresIn: `${time.accessTokenExpiresIn}m`,
     });
 
     // Set new access token cookie
     res.cookie('access_token', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Make sure to set secure flag in production
-      maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000, // Convert minutes to milliseconds
+      maxAge: time.accessTokenExpiresIn * 60 * 1000, // Convert minutes to milliseconds
     });
 
     // Send response
@@ -177,14 +180,28 @@ export const logoutHandler = async (
 ) => {
   try {
     const user = res.locals.user;
+    // Validate the token before proceeding
+    if (!user) {
+      console.log('User not found in res.locals');
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Invalid token',
+      });
+    }
 
-    await logout(res); 
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
 
-    // Send success response
-    res.status(200).json({
+    // Respond with success status
+    return res.status(200).json({
       status: 'success',
+      message: 'Logout successful',
     });
-  } catch (err: any) {
-    next(err);
+  } catch (err) {
+    console.error('Logout error:', err);
+    res.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
+    });
   }
 };
