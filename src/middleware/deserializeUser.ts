@@ -6,6 +6,8 @@ import AppError from '../utils/appError';
 import { verifyJwt } from '../utils/jwt';
 import jwt from 'jsonwebtoken';
 import time from '../config/time';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const deserializeUser = async (
   req: Request,
@@ -25,6 +27,7 @@ export const deserializeUser = async (
     }
 
     if (!access_token) {
+      console.log('No access token provided');
       return next(new AppError(401, 'You are not logged in'));
     }
 
@@ -54,6 +57,7 @@ export const deserializeUser = async (
     next();
   } catch (err: any) {
     // Handle JWT verification errors
+    console.error('Token verification failed:', err);
     if (err.name === 'TokenExpiredError') {
       return next(new AppError(401, 'Token has expired'));
     } else if (err.name === 'JsonWebTokenError') {

@@ -10,6 +10,7 @@ export const signJwt = (
     config.get<string>(keyName),
     'base64'
   ).toString('ascii');
+  console.log(`Signing JWT with key: ${keyName}`);
   return jwt.sign(payload, privateKey, {
     ...(options && options),
     algorithm: 'RS256',
@@ -25,10 +26,12 @@ export const verifyJwt = <T>(
       config.get<string>(keyName),
       'base64'
     ).toString('ascii');
+    console.log(`Verifying JWT with key: ${keyName}`);
     const decoded = jwt.verify(token, publicKey) as T;
 
     return decoded;
   } catch (error) {
+    console.error(`Error verifying JWT: ${error}`);
     return null;
   }
 };
