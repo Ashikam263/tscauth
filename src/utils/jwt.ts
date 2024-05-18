@@ -1,9 +1,12 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import config from 'config';
 
+// Utility type to constrain keyName to either 'accessToken' or 'refreshToken'
+type KeyName = 'accessToken' | 'refreshToken';
+
 export const signJwt = (
   payload: Object,
-  keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
+  keyName: KeyName,
   options: SignOptions
 ) => {
   const privateKey = Buffer.from(
@@ -19,7 +22,7 @@ export const signJwt = (
 
 export const verifyJwt = <T>(
   token: string,
-  keyName: 'accessTokenPublicKey' | 'refreshTokenPublicKey'
+  keyName: KeyName
 ): T | null => {
   try {
     const publicKey = Buffer.from(
