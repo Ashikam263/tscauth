@@ -22,6 +22,9 @@
 //   },
 // };
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const environmentVariables = {
   port: process.env.PORT,
 

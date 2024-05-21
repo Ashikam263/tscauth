@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export default {
   origin: 'http://localhost:3000',
   accessTokenExpiresIn: 15,

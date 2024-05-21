@@ -6,6 +6,9 @@
 //   emailFrom: 'ashikam263@gmail.com',
 // };
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const time = {
   origin: 'http://localhost:3000',
