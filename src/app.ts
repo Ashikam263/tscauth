@@ -92,6 +92,8 @@ import AppError from './utils/appError';
 import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
 // import redisClient from './utils/connectRedis';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Validate environment variables
 function validateEnv() {
