@@ -104,48 +104,28 @@ export const loginUserHandler = async (
   }
 };
 
-
-
-export const refreshAccessTokenHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const refreshAccessTokenHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const refresh_token = req.cookies.refresh_token;
-
-    // const message = 'Could not refresh access token';
 
     if (!refresh_token) {
       return next(new AppError(403, 'Refresh token missing'));
     }
 
-    // Validate refresh token (assuming your verifyJwt function is properly implemented)
-    // const decoded = verifyJwt<{ sub: string }>(
-    //   refresh_token,
-    //   'refreshTokenPublicKey'
-    // );
-    // const decoded = jwt.verify(refresh_token, config.get('refreshTokenPrivateKey'));
-    const decoded = jwt.verify(refresh_token, environmentVariables.refreshTokenPrivateKey || '') as { sub: string };
-
+    const decoded = verifyJwt<{ sub: string }>(refresh_token, 'refresh');
 
     if (!decoded) {
       return next(new AppError(403, 'Invalid Refresh Token'));
     }
 
     // Check if user exists by decoding the subject ID from the refresh token
-    const user = await findUserById(decoded.sub as string);
+    const user = await findUserById(decoded.sub);
 
     if (!user) {
       return next(new AppError(403, 'User not found'));
     }
 
-    // Sign new access token
-    // const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
-    //   expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
-    // });
-
-    const access_token = jwt.sign({ sub: user.id }, config.get('accessTokenPrivateKey'), {
+    const access_token = signJwt({ sub: user.id }, 'access', {
       expiresIn: `${time.accessTokenExpiresIn}m`,
     });
 
@@ -166,41 +146,39 @@ export const refreshAccessTokenHandler = async (
   }
 };
 
-const logout = (res: Response) => {
-  res.cookie('access_token', '', { maxAge: 1 });
-  res.cookie('refresh_token', '', { maxAge: 1 });
-  res.cookie('logged_in', '', { maxAge: 1 });
-};
-
-export const logoutHandler = async (
+export const logoutHandler = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = res.locals.user;
-    // Validate the token before proceeding
-    if (!user) {
-      console.log('User not found in res.locals');
-      return res.status(401).json({
-        status: 'fail',
-        message: 'Invalid token',
-      });
-    }
+    // Clear the access token cookie
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
 
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    // Clear the refresh token cookie
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
 
-    // Respond with success status
-    return res.status(200).json({
+    // Clear the logged_in cookie
+    res.clearCookie('logged_in', {
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    // Send response
+    res.status(200).json({
       status: 'success',
-      message: 'Logout successful',
+      message: 'Successfully logged out',
     });
-  } catch (err) {
-    console.error('Logout error:', err);
-    res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-    });
+  } catch (err: any) {
+    next(err);
   }
 };
