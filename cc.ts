@@ -606,6 +606,7 @@ import { util } from "config"
 
 // src>contollers>auth.controller.ts as on 22-05-2024 11:07 is 
 import { CookieOptions, NextFunction, Request, Response } from 'express';
+import { deserialize } from "v8";
 // import config from 'config';
 // import { CreateUserInput, LoginUserInput } from '../schemas/user.schema';
 // import {
@@ -811,3 +812,164 @@ import { CookieOptions, NextFunction, Request, Response } from 'express';
 //     });
 //   }
 // };
+
+
+// src>middleware>deserializeUser.ts as on 22-05-2024 12:17 is
+// import { NextFunction, Request, Response } from 'express';
+// import { findUserById } from '../services/user.service';
+// import AppError from '../utils/appError';
+// // import redisClient from '../utils/connectRedis';
+// import { verifyJwt } from '../utils/jwt';
+// import jwt from 'jsonwebtoken';
+// import time from '../config/time';
+// import dotenv from 'dotenv';
+// dotenv.config();
+
+// export const deserializeUser = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     let access_token;
+
+//     if (
+//       req.headers.authorization &&
+//       req.headers.authorization.startsWith('Bearer')
+//     ) {
+//       access_token = req.headers.authorization.split(' ')[1];
+//     } else if (req.cookies.access_token) {
+//       access_token = req.cookies.access_token;
+//     }
+
+//     if (!access_token) {
+//       console.log('No access token provided');
+//       return next(new AppError(401, 'You are not logged in'));
+//     }
+
+
+//     // const accessTokenPrivateKey = process.env.JWT_ACCESS_TOKEN_PRIVATE_KEY;
+//     const accessTokenPrivateKey = process.env.JWT_ACCESS_TOKEN_PRIVATE_KEY?.replace(/\\n/g, '\n');
+//     if (!accessTokenPrivateKey) {
+//       throw new Error('JWT_ACCESS_TOKEN_PRIVATE_KEY is not defined');
+//     }
+
+//     const decoded = verifyJwt<{ sub: string }>(access_token, accessTokenPrivateKey);
+
+//     if (!decoded) {
+//       return next(new AppError(401, `Invalid token or user doesn't exist`));
+//     }
+
+//     const user = await findUserById(decoded.sub);
+
+//     if (!user) {
+//       return next(new AppError(401, `User not found`));
+//     }
+
+//     res.locals.user = user;
+
+//     next();
+//   } catch (err: any) {
+//     console.error('Token verification failed:', err);
+//     if (err.name === 'TokenExpiredError') {
+//       return next(new AppError(401, 'Token has expired'));
+//     } else if (err.name === 'JsonWebTokenError') {
+//       return next(new AppError(401, 'Invalid token'));
+//     }
+
+//     next(err);
+//   }
+// };
+
+// src>utils>jwt.ts as on 22-05-2024 12:41 is
+import jwt, { SignOptions } from 'jsonwebtoken';
+// import config from 'config';
+
+// // Utility type to constrain keyName to either 'accessToken' or 'refreshToken'
+// // type KeyName = 'accessToken' | 'refreshToken';
+
+// type KeyName = string;
+
+// export const signJwt = (
+//   payload: Object,
+//   keyName: KeyName,
+//   options: SignOptions
+// ) => {
+//   const privateKey = Buffer.from(
+//     config.get<string>(keyName),
+//     'base64'
+//   ).toString('ascii');
+//   console.log(`Signing JWT with key: ${keyName}`);
+//   return jwt.sign(payload, privateKey, {
+//     ...(options && options),
+//     algorithm: 'RS256',
+//   });
+// };
+
+// export const verifyJwt = <T>(
+//   token: string,
+//   keyName: KeyName
+// ): T | null => {
+//   try {
+//     // Decode the base64 encoded key from the configuration
+//     const publicKey = Buffer.from(
+//       config.get<string>(keyName),
+//       'base64'
+//     ).toString('ascii');
+    
+//     console.log(`Verifying JWT with key: ${keyName}`);
+
+//     // Verify the token using RS256 algorithm
+//     const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] }) as T;
+
+//     return decoded;
+//   } catch (error) {
+//     console.error(`Error verifying JWT: ${error}`);
+//     return null;
+//   }
+// };
+
+//the deserailizerr user code is working for 
+// import { NextFunction, Request, Response } from 'express';
+// import { verifyJwt } from '../utils/jwt';
+// import { findUserById } from '../services/user.service';
+// import AppError from '../utils/appError';
+
+// export const deserializeUser = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     let accessToken;
+
+//     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+//       accessToken = req.headers.authorization.split(' ')[1];
+//     } else if (req.cookies.access_token) {
+//       accessToken = req.cookies.access_token;
+//     }
+
+//     // If there is no access token, continue to the next middleware
+//     if (!accessToken) {
+//       return next();
+//     }
+
+//     const decoded = verifyJwt<{ sub: string }>(accessToken, 'access');
+
+//     // If the access token is invalid or user not found, continue to the next middleware
+//     if (!decoded) {
+//       return next();
+//     }
+
+//     const user = await findUserById(decoded.sub);
+
+//     // If the user is not found, continue to the next middleware
+//     if (!user) {
+//       return next();
+//     }
+
+//     // Set the user data in res.locals
+//     res.locals.user = user;
+//     next();
+//   } catch (err: any) {
+//     next(err);
+//   }
+// };
+
+

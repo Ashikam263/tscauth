@@ -1,0 +1,6 @@
+{
+  "accessTokenPrivateKey": "your_access_token_private_key",
+  "accessTokenPublicKey": "your_access_token_public_key",
+  "refreshTokenPrivateKey": "your_refresh_token_private_key",
+  "refreshTokenPublicKey": "your_refresh_token_public_key"
+}

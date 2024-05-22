@@ -7,11 +7,9 @@ import {
   findUserById,
   signTokens,
 } from '../services/user.service';
-import AppError from '../utils/appError'
-// import redisClient from '../utils/connectRedis';
+import AppError from '../utils/appError';
 import { signJwt, verifyJwt } from '../utils/jwt';
 import { User } from '../entities/user.entity';
-import jwt from 'jsonwebtoken';
 import time from '../config/time';
 import environmentVariables from '../config/envvariables';
 
@@ -104,7 +102,11 @@ export const loginUserHandler = async (
   }
 };
 
-export const refreshAccessTokenHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const refreshAccessTokenHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const refresh_token = req.cookies.refresh_token;
 
@@ -132,8 +134,8 @@ export const refreshAccessTokenHandler = async (req: Request, res: Response, nex
     // Set new access token cookie
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Make sure to set secure flag in production
-      maxAge: time.accessTokenExpiresIn * 60 * 1000, // Convert minutes to milliseconds
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: time.accessTokenExpiresIn * 60 * 1000,
     });
 
     // Send response
@@ -141,8 +143,8 @@ export const refreshAccessTokenHandler = async (req: Request, res: Response, nex
       status: 'success',
       access_token,
     });
-  } catch (err: any) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 

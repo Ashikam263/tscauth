@@ -19,7 +19,7 @@ router.post('/register', validate(createUserSchema), registerUserHandler);
 router.post('/login', validate(loginUserSchema), loginUserHandler);
 
 // Logout user
-router.get('/logout', deserializeUser, requireUser, logoutHandler);
+router.post('/logout', deserializeUser, requireUser, logoutHandler);
 
 // Refresh access token
 router.get('/refresh', refreshAccessTokenHandler);
