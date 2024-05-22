@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
-
 const time = {
   origin: 'http://localhost:3000',
   accessTokenExpiresIn: 15, // Token expiration time in minutes for access token

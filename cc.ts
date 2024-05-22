@@ -582,3 +582,232 @@ import { util } from "config"
 //   subscribers: ['src/subscribers/**/*{.ts,.js}'],
 // });
 
+// .env.ts
+// PORT=8000
+// NODE_ENV=development
+
+// DB_HOST=127.0.0.1
+// DB_PORT=5432
+// DB_USER=ashik
+// DB_PASSWORD=password
+// DB_DATABASE=authdb
+
+// # JWT_ACCESS_TOKEN_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQABAoGAMX7ytWJX8Tn/PoBTSp2n7AJqaNB640IfPNpkhcsJfWZLf5z8t/PfT1+1FS+YOGguLdLSU7vzRIUt6dt5TCnlcsyfYwJnS7n+VtW9+L2L+z1cKYq1rUo4INCijuZyn257jvy6sGD9vr0XIny/dDXju596OeyH2K18p0aitHUL2UECQQDZpSQXNMDATqGkYPBDDls8iF6zHRJFmVuuHBYpBcfln+dTHWYe717vUYSv/3XUq8TSrWmkQd9zrxXx8XamsUYxAkEAtRW9CDgTCQUBTw/W1xF/rhpxnSRXaWiaW+LhRdXNzFTEqzOImDk6p4ViTQA/9d8DZip9EA9wOliJGO0I5wLYIwJAFJ3QDWKx34WTSj7kg3WYruM8FTtrv6wHQzbl4nzpspazEux1//gsxf6y0vkf8EVVH5/NogGbaRnsuj5lPuUMAQJAX5vMpIxGsJpt6Hpqaj8Y9KmNlvRbGpJZ/W26lw6di+att96LniOJLm2kSxd4ra5Dsyt3wIUGMigQqpJsAtxjlQJASLVJ4Xw7UdY5Dto7fl2/416H3iwxDEe5AgwrXWDT/WQ2aWxAjKBWGomW3NZ0M6oK9fayHcaHhiAtHk/jWNat1A==\n-----END RSA PRIVATE KEY-----"
+// JWT_ACCESS_TOKEN_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQABAoGAMX7ytWJX8Tn/PoBTSp2n7AJqaNB640IfPNpkhcsJfWZLf5z8t/PfT1+1FS+YOGguLdLSU7vzRIUt6dt5TCnlcsyfYwJnS7n+VtW9+L2L+z1cKYq1rUo4INCijuZyn257jvy6sGD9vr0XIny/dDXju596OeyH2K18p0aitHUL2UECQQDZpSQXNMDATqGkYPBDDls8iF6zHRJFmVuuHBYpBcfln+dTHWYe717vUYSv/3XUq8TSrWmkQd9zrxXx8XamsUYxAkEAtRW9CDgTCQUBTw/W1xF/rhpxnSRXaWiaW+LhRdXNzFTEqzOImDk6p4ViTQA/9d8DZip9EA9wOliJGO0I5wLYIwJAFJ3QDWKx34WTSj7kg3WYruM8FTtrv6wHQzbl4nzpspazEux1//gsxf6y0vkf8EVVH5/NogGbaRnsuj5lPuUMAQJAX5vMpIxGsJpt6Hpqaj8Y9KmNlvRbGpJZ/W26lw6di+att96LniOJLm2kSxd4ra5Dsyt3wIUGMigQqpJsAtxjlQJASLVJ4Xw7UdY5Dto7fl2/416H3iwxDEe5AgwrXWDT/WQ2aWxAjKBWGomW3NZ0M6oK9fayHcaHhiAtHk/jWNat1A==\n-----END RSA PRIVATE KEY-----"
+// JWT_ACCESS_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQAB-----END PUBLIC KEY-----
+// JWT_REFRESH_TOKEN_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----MIICXgIBAAKBgQCwtVMCLJaU9mArVOymozDserEG3B6vFwlRdDWHC28ijzr4UemoqaMnMyKE7lC/QVo9FT93Vxzbf15NS6kknBgAjXYZvYVnYJ4IjHh6Dw37vhmtbyWXigwQAIOaxxRRKoFmuRS8ZZQruVY9nyJ/vIAtA2E0dijYT+z8D/CPAheuCQIDAQABAoGBAJMSt73tgn8E+FHYYwbmeEe6bjC5cEhmMfk7cXmuiJcJAxm+g20/k22C384n08j7CbIhRyt6s6f0wHYw7NxtloMtJZS7jsw+8zwZTyduQ1/cbZk4UL8klRC/7NOXd7SOvVp39micv56CZCmXAMxcOizWycPS3Q7Cr/RVoAZZaxxpAkEA15dU1fff6opGsEnK7OHnXu2GwgnLw5lvDk9NmiQbC/OnycBlx0Qolw9XsnpMQnv/JVdx7St0g3Y1iNYXKBRUJwJBANHUSPCo946PTswDRvH8tHhXJKr6XRK2cydcybvmLVJxbiXaGCU0tc6of/PfnO4RxBN96A9HhHJGQGLemclkWk8CQQCw2kpUj9cWbkIYoSAe/B2xqIXQLPsDRJ1ujq1pEc9CGal9fh+/u/DUIljdZyehrlgaSMaDOQ+GO/UkgANU9IAnAkEAqHhENA3F7c08G+tJrAMUt0ZoZ2rrDZo1rNYAFwBBRV9Ta8rG9iBzFMEPMrRIYJEdF/VQO+xU+BdVnMxTN3J+WwJAcHjTRM8vTe0vaqmphSCE4pdcIP5+zKOhQtJmHTR/iaNCMNxcyKdaMVBQPhXEkRbxifHK8jgasQZNy3f76uUBEg==-----END RSA PRIVATE KEY-----
+// JWT_REFRESH_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwtVMCLJaU9mArVOymozDserEG3B6vFwlRdDWHC28ijzr4UemoqaMnMyKE7lC/QVo9FT93Vxzbf15NS6kknBgAjXYZvYVnYJ4IjHh6Dw37vhmtbyWXigwQAIOaxxRRKoFmuRS8ZZQruVY9nyJ/vIAtA2E0dijYT+z8D/CPAheuCQIDAQAB-----END PUBLIC KEY-----
+
+
+// accessTokenPrivateKey=JWT_ACCESS_TOKEN_PRIVATE_KEY
+// accessTokenPublicKey=JWT_ACCESS_TOKEN_PUBLIC_KEY
+// refreshTokenPrivateKey=JWT_REFRESH_TOKEN_PRIVATE_KEY
+// refreshTokenPublicKey=JWT_REFRESH_TOKEN_PUBLIC_KEY
+
+// src>contollers>auth.controller.ts as on 22-05-2024 11:07 is 
+import { CookieOptions, NextFunction, Request, Response } from 'express';
+// import config from 'config';
+// import { CreateUserInput, LoginUserInput } from '../schemas/user.schema';
+// import {
+//   createUser,
+//   findUserByEmail,
+//   findUserById,
+//   signTokens,
+// } from '../services/user.service';
+// import AppError from '../utils/appError'
+// // import redisClient from '../utils/connectRedis';
+// import { signJwt, verifyJwt } from '../utils/jwt';
+// import { User } from '../entities/user.entity';
+// import jwt from 'jsonwebtoken';
+// import time from '../config/time';
+// import environmentVariables from '../config/envvariables';
+
+// const cookiesOptions: CookieOptions = {
+//   httpOnly: true,
+//   sameSite: 'lax',
+// };
+
+// if (process.env.NODE_ENV === 'production') cookiesOptions.secure = true;
+
+// const accessTokenCookieOptions: CookieOptions = {
+//   ...cookiesOptions,
+//   expires: new Date(
+//     Date.now() + config.get<number>('accessTokenExpiresIn') * 60 * 1000
+//   ),
+//   maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000,
+// };
+
+// const refreshTokenCookieOptions: CookieOptions = {
+//   ...cookiesOptions,
+//   expires: new Date(
+//     Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
+//   ),
+//   maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
+// };
+
+// export const registerUserHandler = async (
+//   req: Request<{}, {}, CreateUserInput>,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { name, password, email } = req.body;
+
+//     const user = await createUser({
+//       name,
+//       email: email.toLowerCase(),
+//       password,
+//     });
+
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         user,
+//       },
+//     });
+//   } catch (err: any) {
+//     if (err.code === '23505') {
+//       return res.status(409).json({
+//         status: 'fail',
+//         message: 'User with that email already exist',
+//       });
+//     }
+//     next(err);
+//   }
+// };
+
+// export const loginUserHandler = async (
+//   req: Request<{}, {}, LoginUserInput>,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await findUserByEmail({ email });
+
+//     //1. Check if user exists and password is valid
+//     if (!user || !(await User.comparePasswords(password, user.password))) {
+//       return next(new AppError(400, 'Invalid email or password'));
+//     }
+
+//     // 2. Sign Access and Refresh Tokens
+//     const { access_token, refresh_token } = await signTokens(user);
+
+//     // 3. Add Cookies
+//     res.cookie('access_token', access_token, accessTokenCookieOptions);
+//     res.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);
+//     res.cookie('logged_in', true, {
+//       ...accessTokenCookieOptions,
+//       httpOnly: false,
+//     });
+
+//     // 4. Send response
+//     res.status(200).json({
+//       status: 'success',
+//       access_token,
+//     });
+//   } catch (err: any) {
+//     next(err);
+//   }
+// };
+
+
+
+// export const refreshAccessTokenHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const refresh_token = req.cookies.refresh_token;
+
+//     // const message = 'Could not refresh access token';
+
+//     if (!refresh_token) {
+//       return next(new AppError(403, 'Refresh token missing'));
+//     }
+
+//     // Validate refresh token (assuming your verifyJwt function is properly implemented)
+//     // const decoded = verifyJwt<{ sub: string }>(
+//     //   refresh_token,
+//     //   'refreshTokenPublicKey'
+//     // );
+//     // const decoded = jwt.verify(refresh_token, config.get('refreshTokenPrivateKey'));
+//     const decoded = jwt.verify(refresh_token, environmentVariables.refreshTokenPrivateKey || '') as { sub: string };
+
+
+//     if (!decoded) {
+//       return next(new AppError(403, 'Invalid Refresh Token'));
+//     }
+
+//     // Check if user exists by decoding the subject ID from the refresh token
+//     const user = await findUserById(decoded.sub as string);
+
+//     if (!user) {
+//       return next(new AppError(403, 'User not found'));
+//     }
+
+//     // Sign new access token
+//     // const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
+//     //   expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+//     // });
+
+//     const access_token = jwt.sign({ sub: user.id }, config.get('accessTokenPrivateKey'), {
+//       expiresIn: `${time.accessTokenExpiresIn}m`,
+//     });
+
+//     // Set new access token cookie
+//     res.cookie('access_token', access_token, {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production', // Make sure to set secure flag in production
+//       maxAge: time.accessTokenExpiresIn * 60 * 1000, // Convert minutes to milliseconds
+//     });
+
+//     // Send response
+//     res.status(200).json({
+//       status: 'success',
+//       access_token,
+//     });
+//   } catch (err: any) {
+//     next(err);
+//   }
+// };
+
+// const logout = (res: Response) => {
+//   res.cookie('access_token', '', { maxAge: 1 });
+//   res.cookie('refresh_token', '', { maxAge: 1 });
+//   res.cookie('logged_in', '', { maxAge: 1 });
+// };
+
+// export const logoutHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const user = res.locals.user;
+//     // Validate the token before proceeding
+//     if (!user) {
+//       console.log('User not found in res.locals');
+//       return res.status(401).json({
+//         status: 'fail',
+//         message: 'Invalid token',
+//       });
+//     }
+
+//     res.clearCookie('access_token');
+//     res.clearCookie('refresh_token');
+
+//     // Respond with success status
+//     return res.status(200).json({
+//       status: 'success',
+//       message: 'Logout successful',
+//     });
+//   } catch (err) {
+//     console.error('Logout error:', err);
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'Internal server error',
+//     });
+//   }
+// };

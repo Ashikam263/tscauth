@@ -14,7 +14,6 @@ import { User } from '../entities/user.entity';
 import jwt from 'jsonwebtoken';
 import time from '../config/time';
 import environmentVariables from '../config/envvariables';
-import { env } from 'process';
 
 const cookiesOptions: CookieOptions = {
   httpOnly: true,

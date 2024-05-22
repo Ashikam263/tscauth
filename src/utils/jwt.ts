@@ -44,20 +44,3 @@ export const verifyJwt = <T>(
     return null;
   }
 };
-
-// export const verifyJwt = <T>(
-//   token: string,
-//   key: string
-// ): T | null => {
-//   try {
-//     console.log(`Verifying JWT with key: ${key}`);
-
-//     // Verify the token using RS256 algorithm
-//     const decoded = jwt.verify(token, key, { algorithms: ['RS256'] }) as T;
-
-//     return decoded;
-//   } catch (error) {
-//     console.error(`Error verifying JWT: ${error}`);
-//     return null;
-//   }
-// };
