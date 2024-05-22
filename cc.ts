@@ -6,6 +6,8 @@
 //   try {
 //     const user = res.locals.user;
 
+import { util } from "config"
+
 //     await redisClient.del(user.id);
 //     logout(res);
 
@@ -376,3 +378,207 @@
 //     next(err);
 //   }
 // };
+
+
+//.env file before full implementation
+// PORT=8000
+// NODE_ENV=development
+
+// DB_HOST=127.0.0.1
+// DB_PORT=5432
+// DB_USER=ashik
+// DB_PASSWORD=password
+// DB_DATABASE=authdb
+
+// # JWT_ACCESS_TOKEN_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQABAoGAMX7ytWJX8Tn/PoBTSp2n7AJqaNB640IfPNpkhcsJfWZLf5z8t/PfT1+1FS+YOGguLdLSU7vzRIUt6dt5TCnlcsyfYwJnS7n+VtW9+L2L+z1cKYq1rUo4INCijuZyn257jvy6sGD9vr0XIny/dDXju596OeyH2K18p0aitHUL2UECQQDZpSQXNMDATqGkYPBDDls8iF6zHRJFmVuuHBYpBcfln+dTHWYe717vUYSv/3XUq8TSrWmkQd9zrxXx8XamsUYxAkEAtRW9CDgTCQUBTw/W1xF/rhpxnSRXaWiaW+LhRdXNzFTEqzOImDk6p4ViTQA/9d8DZip9EA9wOliJGO0I5wLYIwJAFJ3QDWKx34WTSj7kg3WYruM8FTtrv6wHQzbl4nzpspazEux1//gsxf6y0vkf8EVVH5/NogGbaRnsuj5lPuUMAQJAX5vMpIxGsJpt6Hpqaj8Y9KmNlvRbGpJZ/W26lw6di+att96LniOJLm2kSxd4ra5Dsyt3wIUGMigQqpJsAtxjlQJASLVJ4Xw7UdY5Dto7fl2/416H3iwxDEe5AgwrXWDT/WQ2aWxAjKBWGomW3NZ0M6oK9fayHcaHhiAtHk/jWNat1A==\n-----END RSA PRIVATE KEY-----"
+// JWT_ACCESS_TOKEN_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQABAoGAMX7ytWJX8Tn/PoBTSp2n7AJqaNB640IfPNpkhcsJfWZLf5z8t/PfT1+1FS+YOGguLdLSU7vzRIUt6dt5TCnlcsyfYwJnS7n+VtW9+L2L+z1cKYq1rUo4INCijuZyn257jvy6sGD9vr0XIny/dDXju596OeyH2K18p0aitHUL2UECQQDZpSQXNMDATqGkYPBDDls8iF6zHRJFmVuuHBYpBcfln+dTHWYe717vUYSv/3XUq8TSrWmkQd9zrxXx8XamsUYxAkEAtRW9CDgTCQUBTw/W1xF/rhpxnSRXaWiaW+LhRdXNzFTEqzOImDk6p4ViTQA/9d8DZip9EA9wOliJGO0I5wLYIwJAFJ3QDWKx34WTSj7kg3WYruM8FTtrv6wHQzbl4nzpspazEux1//gsxf6y0vkf8EVVH5/NogGbaRnsuj5lPuUMAQJAX5vMpIxGsJpt6Hpqaj8Y9KmNlvRbGpJZ/W26lw6di+att96LniOJLm2kSxd4ra5Dsyt3wIUGMigQqpJsAtxjlQJASLVJ4Xw7UdY5Dto7fl2/416H3iwxDEe5AgwrXWDT/WQ2aWxAjKBWGomW3NZ0M6oK9fayHcaHhiAtHk/jWNat1A==\n-----END RSA PRIVATE KEY-----"
+// JWT_ACCESS_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZ9D3GRq4tRSObARER66rfihPRxJt3yWdutMJ/w4hzFPtVUrJfgYi6B0uoF0vjhnupmf2Z3uQuqU2T+rE9TIpIAQPSyIIEt8huolZL8ax9D+ekY8h/CsHYmMZdxblq5F2qXmskK+WmenSgzv+Tcobpmb/vJUkKJkg4RPIfINfwswIDAQAB-----END PUBLIC KEY-----
+// JWT_REFRESH_TOKEN_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----MIICXgIBAAKBgQCwtVMCLJaU9mArVOymozDserEG3B6vFwlRdDWHC28ijzr4UemoqaMnMyKE7lC/QVo9FT93Vxzbf15NS6kknBgAjXYZvYVnYJ4IjHh6Dw37vhmtbyWXigwQAIOaxxRRKoFmuRS8ZZQruVY9nyJ/vIAtA2E0dijYT+z8D/CPAheuCQIDAQABAoGBAJMSt73tgn8E+FHYYwbmeEe6bjC5cEhmMfk7cXmuiJcJAxm+g20/k22C384n08j7CbIhRyt6s6f0wHYw7NxtloMtJZS7jsw+8zwZTyduQ1/cbZk4UL8klRC/7NOXd7SOvVp39micv56CZCmXAMxcOizWycPS3Q7Cr/RVoAZZaxxpAkEA15dU1fff6opGsEnK7OHnXu2GwgnLw5lvDk9NmiQbC/OnycBlx0Qolw9XsnpMQnv/JVdx7St0g3Y1iNYXKBRUJwJBANHUSPCo946PTswDRvH8tHhXJKr6XRK2cydcybvmLVJxbiXaGCU0tc6of/PfnO4RxBN96A9HhHJGQGLemclkWk8CQQCw2kpUj9cWbkIYoSAe/B2xqIXQLPsDRJ1ujq1pEc9CGal9fh+/u/DUIljdZyehrlgaSMaDOQ+GO/UkgANU9IAnAkEAqHhENA3F7c08G+tJrAMUt0ZoZ2rrDZo1rNYAFwBBRV9Ta8rG9iBzFMEPMrRIYJEdF/VQO+xU+BdVnMxTN3J+WwJAcHjTRM8vTe0vaqmphSCE4pdcIP5+zKOhQtJmHTR/iaNCMNxcyKdaMVBQPhXEkRbxifHK8jgasQZNy3f76uUBEg==-----END RSA PRIVATE KEY-----
+// JWT_REFRESH_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwtVMCLJaU9mArVOymozDserEG3B6vFwlRdDWHC28ijzr4UemoqaMnMyKE7lC/QVo9FT93Vxzbf15NS6kknBgAjXYZvYVnYJ4IjHh6Dw37vhmtbyWXigwQAIOaxxRRKoFmuRS8ZZQruVY9nyJ/vIAtA2E0dijYT+z8D/CPAheuCQIDAQAB-----END PUBLIC KEY-----
+
+
+// accessTokenPrivateKey=JWT_ACCESS_TOKEN_PRIVATE_KEY
+// accessTokenPublicKey=JWT_ACCESS_TOKEN_PUBLIC_KEY
+// refreshTokenPrivateKey=JWT_REFRESH_TOKEN_PRIVATE_KEY
+// refreshTokenPublicKey=JWT_REFRESH_TOKEN_PUBLIC_KEY
+
+// app.ts
+
+// require('dotenv').config();
+// import express, { NextFunction, Request, Response } from 'express';
+// import config from 'config';
+// import morgan from 'morgan';
+// import cookieParser from 'cookie-parser';
+// import cors from 'cors';
+// import { AppDataSource } from './utils/data-source';
+// import AppError from './utils/appError';
+// import authRouter from './routes/auth.routes';
+// import userRouter from './routes/user.routes';
+// import validateEnv from './utils/validateEnv';
+// import redisClient from './utils/connectRedis';
+
+// AppDataSource.initialize()
+//   .then(async () => {
+//     // VALIDATE ENV
+//     validateEnv();
+
+//     const app = express();
+
+//     // TEMPLATE ENGINE
+
+//     // MIDDLEWARE
+
+//     // 1. Body parser
+//     app.use(express.json({ limit: '10kb' }));
+
+//     // 2. Logger
+//     if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+
+//     // 3. Cookie Parser
+//     app.use(cookieParser());
+
+//     // 4. Cors
+//     app.use(
+//       cors({
+//         origin: config.get<string>('origin'),
+//         credentials: true,
+//       })
+//     );
+
+//     // ROUTES
+//     app.use('/api/auth', authRouter);
+//     app.use('/api/users', userRouter);
+
+//     // HEALTH CHECKER
+//     app.get('/api/healthChecker', async (_, res: Response) => {
+//       const message = await redisClient.get('try');
+
+//       res.status(200).json({
+//         status: 'success',
+//         message,
+//       });
+//     });
+
+//     // UNHANDLED ROUTE
+//     app.all('*', (req: Request, res: Response, next: NextFunction) => {
+//       next(new AppError(404, `Route ${req.originalUrl} not found`));
+//     });
+
+//     // GLOBAL ERROR HANDLER
+//     app.use(
+//       (error: AppError, req: Request, res: Response, next: NextFunction) => {
+//         error.status = error.status || 'error';
+//         error.statusCode = error.statusCode || 500;
+
+//         res.status(error.statusCode).json({
+//           status: error.status,
+//           message: error.message,
+//         });
+//       }
+//     );
+
+//     const port = config.get<number>('port');
+//     app.listen(port);
+
+//     console.log(`Server started on port: ${port}`);
+//   })
+//   .catch((error) => console.log(error));
+
+
+// connectRedis.ts src>utils>connectRedis.ts
+// import { createClient } from 'redis';
+
+// const redisUrl = 'redis://localhost:6379';
+
+// const redisClient = createClient({
+//   url: redisUrl,
+// });
+
+// const connectRedis = async () => {
+//   try {
+//     await redisClient.connect();
+//     console.log('Redis client connect successfully');
+//     redisClient.set('try', 'Hello Welcome to Express with TypeORM');
+//   } catch (error) {
+//     console.log(error);
+//     setTimeout(connectRedis, 5000);
+//   }
+// };
+
+// connectRedis();
+
+// export default redisClient;
+
+// src>config>envvariable.ts
+// export default {
+//   port: 'PORT',
+
+//   postgresConfig: {
+//     host: 'POSTGRES_HOST',
+//     port: 'POSTGRES_PORT',
+//     username: 'POSTGRES_USER',
+//     password: 'POSTGRES_PASSWORD',
+//     database: 'POSTGRES_DB',
+//   },
+
+//   accessTokenPrivateKey: 'JWT_ACCESS_TOKEN_PRIVATE_KEY',
+//   accessTokenPublicKey: 'JWT_ACCESS_TOKEN_PUBLIC_KEY',
+//   refreshTokenPrivateKey: 'JWT_REFRESH_TOKEN_PRIVATE_KEY',
+//   refreshTokenPublicKey: 'JWT_REFRESH_TOKEN_PUBLIC_KEY',
+
+//   smtp: {
+//     host: 'EMAIL_HOST',
+//     pass: 'EMAIL_PASS',
+//     port: 'EMAIL_PORT',
+//     user: 'EMAIL_USER',
+//   },
+// };
+
+// src>config>time.ts
+// export default {
+//   origin: 'http://localhost:3000',
+//   accessTokenExpiresIn: 15,
+//   refreshTokenExpiresIn: 60,
+//   // redisCacheExpiresIn: 60,
+//   emailFrom: 'ashikam263@gmail.com',
+// };
+
+
+// src>utils>appError.ts
+// export default class AppError extends Error {
+//   status: string;
+//   isOperational: boolean;
+//   constructor(public statusCode: number = 500, public message: string) {
+//     super(message);
+//     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+//     this.isOperational = true;
+
+//     Error.captureStackTrace(this, this.constructor);
+//   }
+// }
+
+
+// src>utils>data-source.ts
+// require('dotenv').config();
+// import 'reflect-metadata';
+// import { DataSource } from 'typeorm';
+// import config from 'config';
+
+// const postgresConfig = config.get<{
+//   host: string;
+//   port: number;
+//   username: string;
+//   password: string;
+//   database: string;
+// }>('postgresConfig');
+
+// export const AppDataSource = new DataSource({
+//   ...postgresConfig,
+//   type: 'postgres',
+//   synchronize: false,
+//   logging: false,
+//   entities: ['src/entities/**/*.entity{.ts,.js}'],
+//   migrations: ['src/migrations/**/*{.ts,.js}'],
+//   subscribers: ['src/subscribers/**/*{.ts,.js}'],
+// });
+
