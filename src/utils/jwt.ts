@@ -1,46 +1,33 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import config from 'config';
 
-// Utility type to constrain keyName to either 'accessToken' or 'refreshToken'
-// type KeyName = 'accessToken' | 'refreshToken';
-
-type KeyName = string;
-
+// Function to sign a JWT
 export const signJwt = (
-  payload: Object,
-  keyName: KeyName,
-  options: SignOptions
-) => {
-  const privateKey = Buffer.from(
-    config.get<string>(keyName),
-    'base64'
-  ).toString('ascii');
-  console.log(`Signing JWT with key: ${keyName}`);
+  payload: object,
+  keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
+  options?: jwt.SignOptions
+): string => {
+  const privateKey = config.get<string>(keyName);
+
   return jwt.sign(payload, privateKey, {
-    ...(options && options),
-    algorithm: 'RS256',
+    algorithm: 'HS256', // Ensure the algorithm matches throughout the application
+    ...options,
   });
 };
 
+// Function to verify a JWT
 export const verifyJwt = <T>(
   token: string,
-  keyName: KeyName
+  keyName: 'accessTokenPublicKey' | 'refreshTokenPublicKey'
 ): T | null => {
   try {
-    // Decode the base64 encoded key from the configuration
-    const publicKey = Buffer.from(
-      config.get<string>(keyName),
-      'base64'
-    ).toString('ascii');
-    
-    console.log(`Verifying JWT with key: ${keyName}`);
+    const publicKey = config.get<string>(keyName);
 
-    // Verify the token using RS256 algorithm
-    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] }) as T;
-
-    return decoded;
-  } catch (error) {
-    console.error(`Error verifying JWT: ${error}`);
+    return jwt.verify(token, publicKey, {
+      algorithms: ['HS256'], // Ensure the algorithm matches the signing algorithm
+    }) as T;
+  } catch (err) {
+    console.error('Error verifying JWT:', err);
     return null;
   }
 };
