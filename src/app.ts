@@ -8,6 +8,7 @@ import { AppDataSource } from './utils/data-source';
 import AppError from './utils/appError';
 import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
+import solutionRouter from './routes/solution.routes';
 import path from 'path';
 
 // Validate environment variables
@@ -38,6 +39,7 @@ async function startServer() {
   // Routes
   app.use('/api/auth', authRouter);
   app.use('/api/users', userRouter);
+  app.use('/api/solutions', solutionRouter); 
 
   // Health checker route
   app.get('/api/healthChecker', async (_, res: Response) => {
@@ -68,21 +70,7 @@ async function startServer() {
   try {
     validateEnv(); // Validate environment variables
 
-    const dbOptions: ConnectionOptions = {
-      type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DB_USER || 'ashik',
-      password: process.env.DB_PASSWORD || 'password',
-      database: process.env.DB_NAME || 'authdb',
-      entities: [path.join(__dirname, 'entities', '**', '*.entity.{ts,js}')],
-      migrations: [path.join(__dirname, 'migrations', '**', '*.ts')],
-      subscribers: [path.join(__dirname, 'subscribers', '**', '*.ts')],
-      synchronize: false,
-      logging: process.env.NODE_ENV === 'development',
-    };
-
-    const connection = await createConnection(dbOptions);
+    await AppDataSource.initialize();
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
@@ -94,10 +82,6 @@ async function startServer() {
 }
 
 // Initialize application
-AppDataSource.initialize()
-  .then(() => {
-    startServer(); // Start server after initializing application
-  })
-  .catch((error) => {
-    console.error('Error initializing application:', error);
-  });
+startServer().catch((error) => {
+  console.error('Error initializing application:', error);
+});
