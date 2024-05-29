@@ -5,10 +5,13 @@ import { CreateUserInput } from '../schemas/user.schema';
 import { AppDataSource } from '../utils/data-source';
 import { signJwt } from '../utils/jwt';
 import time from '../config/time';
+import { RoleEnumType} from '../entities/user.entity';
 
 const userRepository = AppDataSource.getRepository(User);
 
 export const createUser = async (input: DeepPartial<User>) => {
+  // Set the role to 'user' by default
+  input.role = input.role || RoleEnumType.USER;
   return userRepository.save(userRepository.create(input));
 };
 
@@ -22,6 +25,19 @@ export const findUserById = async (userId: string) => {
 
 export const findUser = async (query: Object) => {
   return await userRepository.findOneBy(query);
+};
+
+export const getUserById = async (userId: string) => {
+  return await userRepository.findOneBy({id : userId});
+};
+
+export const updateUser = async (userId: string, updateUserInput: DeepPartial<User>) => {
+  await userRepository.update(userId, updateUserInput);
+  return await userRepository.findOneBy({id : userId});
+};
+
+export const deleteUser = async (userId: string) => {
+  await userRepository.softDelete(userId);
 };
 
 export const signTokens = async (user: User) => {
@@ -40,3 +56,9 @@ export const signTokens = async (user: User) => {
 
   return { access_token, refresh_token };
 };
+
+
+export const getUsers = async () => {
+  return await userRepository.find();
+};
+
