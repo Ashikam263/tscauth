@@ -13,5 +13,5 @@
     "rootDir": "./src",
     "resolveJsonModule": true
   },
-  "include": ["src", "ormconfig.json"]
+  "include": ["src", "ormconfig.json", "src/middleware/authmiddleware.ts"]
 }
