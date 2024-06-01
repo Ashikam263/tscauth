@@ -9,6 +9,7 @@ import { isAdmin } from '../middleware/roleCheck'; // Import isAdmin middleware
 const router = express.Router();
 
 router.use(deserializeUser, requireUser);
+// router.use(requireUser);
 
 // Get currently logged in user
 router.get('/me', getMeHandler);

@@ -31,7 +31,7 @@ async function startServer() {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: process.env.ORIGIN || '*', // Use environment variable or fallback to wildcard
+      origin: process.env.ORIGIN || 'http://localhost:3000',
       credentials: true,
     })
   );
@@ -68,8 +68,6 @@ async function startServer() {
 
   // Connect to database and start server
   try {
-    validateEnv(); // Validate environment variables
-
     await AppDataSource.initialize();
 
     const port = process.env.PORT || 3000;
