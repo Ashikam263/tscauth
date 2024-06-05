@@ -31,7 +31,7 @@ async function startServer() {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: process.env.ORIGIN || 'http://localhost:3000',
+      origin: process.env.ORIGIN || 'http://localhost:5173',
       credentials: true,
     })
   );
@@ -70,7 +70,7 @@ async function startServer() {
   try {
     await AppDataSource.initialize();
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 5173;
     app.listen(port, () => {
       console.log(`Server started on port: ${port}`);
     });
